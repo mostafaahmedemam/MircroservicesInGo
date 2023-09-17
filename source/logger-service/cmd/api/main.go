@@ -32,11 +32,12 @@ func main() {
 		log.Panic(err)
 	}
 	client = mongoClient
-
+	fmt.Println(client)
 	// create a context in order to disconnect
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
+	fmt.Println("close connection Done!!")
 	// close connection
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
@@ -47,7 +48,8 @@ func main() {
 	app := Config{
 		Models: data.New(client),
 	}
-
+	// Register gRPC Server
+	go app.gRPCListen()
 	// start web server
 	// go app.serve()
 	log.Println("Starting service on port", webPort)
